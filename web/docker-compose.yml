@@ -1,0 +1,17 @@
+version: '3'
+services:
+  my-web:
+    image: athibault18/my-website:nginx-latest
+    restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.my_website.rule=Host(`adrien-thibault.de`)"
+      - "traefik.http.routers.my_website.entrypoints=websecure"
+      - "traefik.http.routers.my_website.tls=true"
+      - "traefik.http.routers.my_website.tls.certresolver=production"
+    networks:
+      - web
+
+networks:
+  web:
+    external: true
