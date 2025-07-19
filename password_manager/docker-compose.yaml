@@ -1,5 +1,5 @@
 services:
-  db:
+  passboltdb:
     image: mariadb:10.11
     restart: unless-stopped
     environment:
@@ -18,8 +18,8 @@ services:
     depends_on:
       - db
     environment:
-      APP_FULL_BASE_URL: http://127.0.0.1:8000
-      DATASOURCES_DEFAULT_HOST: "db"
+      APP_FULL_BASE_URL: https://pm.adrien-thibault.de
+      DATASOURCES_DEFAULT_HOST: "passboltdb"
       DATASOURCES_DEFAULT_USERNAME: "passbolt"
       DATASOURCES_DEFAULT_PASSWORD: "P4ssb0lt"
       DATASOURCES_DEFAULT_DATABASE: "passbolt"
@@ -35,12 +35,16 @@ services:
         "--",
         "/docker-entrypoint.sh",
       ]
-    ports:
-      - 8000:80
-      - 443:443
-    #Alternatively for non-root images:
-    # - 80:8080
-    # - 443:4433
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.passbolt-http.entrypoints: "web"
+      traefik.http.routers.passbolt-http.rule: "Host(`pm.adrien-thibault.de`)"
+      traefik.http.routers.passbolt-http.middlewares: "SslHeader@file"
+      traefik.http.routers.passbolt-https.middlewares: "SslHeader@file"
+      traefik.http.routers.passbolt-https.entrypoints: "websecure"
+      traefik.http.routers.passbolt-https.rule: "Host(`pm.adrien-thibault.de`)"
+      traefik.http.routers.passbolt-https.tls: "true"
+      traefik.http.routers.passbolt-https.tls.certresolver: "letsencrypt"
 
 volumes:
   database_volume:
