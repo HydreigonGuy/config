@@ -1,0 +1,21 @@
+version: '3'
+services:
+  pingvin-share:
+    image: stonith404/pingvin-share
+    restart: unless-stopped
+    volumes:
+      - "./data:/opt/app/backend/data"
+      - "./data/img:/opt/app/frontend/public/img"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.file_share.rule=Host(`share.adrien-thibault.de`)"
+      - "traefik.http.routers.file_share.entrypoints=websecure"
+      - "traefik.http.routers.file_share.tls=true"
+      - "traefik.http.routers.file_share.tls.certresolver=production"
+      - "traefik.http.services.file_share.loadbalancer.server.port=3000"
+    networks:
+      - web
+
+networks:
+  web:
+    external: true
