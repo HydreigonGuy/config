@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+  vaultwarden:
+    container_name: vaultwarden
+    image: vaultwarden/server:latest
+    volumes:
+      - '/home/ubuntu/docker/vaultwarden/:/data/'
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.password_manager.rule=Host(`pm.adrien-thibault.de`)"
+      - "traefik.http.routers.password_manager.entrypoints=websecure"
+      - "traefik.http.routers.password_manager.tls=true"
+      - "traefik.http.routers.password_manager.tls.certresolver=production"
+      - "traefik.http.services.password_manager.loadbalancer.server.port=80"
+    environment:
+      ADMIN_TOKEN: secret_token
+    networks:
+      - web
+
+networks:
+  web:
+    external: true
