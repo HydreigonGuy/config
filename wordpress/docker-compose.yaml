@@ -1,28 +1,28 @@
 services:
-  wordpress:
+  wordpress-app:
     image: wordpress
     restart: always
     ports:
       - 8080:80
     environment:
-      WORDPRESS_DB_HOST: db
-      WORDPRESS_DB_USER: exampleuser
-      WORDPRESS_DB_PASSWORD: examplepass
+      WORDPRESS_DB_HOST: wordpress-db
+      WORDPRESS_DB_USER: USERNAME
+      WORDPRESS_DB_PASSWORD: PASSWORD
       WORDPRESS_DB_NAME: exampledb
     volumes:
       - wordpress:/var/www/html
 
-  db:
+  wordpress-db:
     image: mysql:8.0
     restart: always
     environment:
       MYSQL_DATABASE: exampledb
-      MYSQL_USER: exampleuser
-      MYSQL_PASSWORD: examplepass
+      MYSQL_USER: USERNAME
+      MYSQL_PASSWORD: PASSWORD
       MYSQL_RANDOM_ROOT_PASSWORD: '1'
     volumes:
-      - db:/var/lib/mysql
+      - wordpress-db:/var/lib/mysql
 
 volumes:
   wordpress:
-  db:
+  wordpress-db:
